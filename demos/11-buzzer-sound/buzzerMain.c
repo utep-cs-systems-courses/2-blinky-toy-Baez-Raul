@@ -25,7 +25,7 @@ int main() {
 }
 
 int note = 4500;
-int majorScale[7] = {500,500,250,500,500,500,250};
+int majorScale[7] = {440,440,220,440,440,440,220};
     
 void
 switch_interrupt_handler()
@@ -41,15 +41,26 @@ switch_interrupt_handler()
     buzzer_set_period(note);
   }
   else if (!(p1val & SW2) && !changed) {
-      changed += 1;
-      note += 500;
+      changed = 1;
+      if (interval == 0)
+	interval = 6;
+      else
+	interval--;
+      note += majorScale[interval];
     }
   else if (!(p1val & SW3) && !changed) {
-      changed += 1;
-      note -= 500;
+      changed = 1;
+      note -= majorScale[interval];
+      if (interval == 6)
+	interval = 0;
+      else
+	interval++;
     } 
   if ((p1val & SW2) && (p1val & SW3)) {
     changed = 0;
+  }
+  if (p1val & SW1) {
+    buzzer_set_period(0);
   }
 }
 
